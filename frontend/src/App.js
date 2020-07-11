@@ -1,7 +1,12 @@
-import React from 'react';
+import React from "react";
+import FileInput from "./FileInput";
 
 function App() {
-  return <div>Implement me!</div>;
+  return (
+    <>
+      <FileInput />
+    </>
+  );
 }
 
 export default App;
