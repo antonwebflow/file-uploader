@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import post from "./post";
+import DropZone from "./DropZone";
 
 const FileInput = () => {
   const [loading, setLoading] = useState(false);
@@ -12,28 +13,36 @@ const FileInput = () => {
   });
   const inputEl = useRef(null);
 
-  const handleChange = async () => {
+  const handleChange = async (e) => {
     setStatus({ state: "initial" });
-    const combindedEmails = [];
+    const combinedEmails = [];
     const names = [];
-    const fileListArray = Array.from(inputEl.current.files);
 
+    let fileListArray = undefined;
+
+    if (e.dataTransfer?.files) {
+      fileListArray = Array.from(e.dataTransfer.files);
+    } else {
+      fileListArray = Array.from(inputEl.current.files);
+    }
     await Promise.all(
       fileListArray.map(async (file) => {
         names.push(file.name);
         const text = await file.text();
         const emails = text.trim().split(/\n/);
-        combindedEmails.push(...emails);
+        combinedEmails.push(...emails);
       })
     );
 
-    console.log(names);
-
     setFileNames(names);
 
-    const uniqueEmails = new Set(combindedEmails);
+    const uniqueEmails = new Set(combinedEmails);
 
     setEmails(Array.from(uniqueEmails));
+  };
+  const onButtonClick = (e) => {
+    e.preventDefault();
+    inputEl.current.click();
   };
 
   const handleSubmit = async (e) => {
@@ -56,11 +65,15 @@ const FileInput = () => {
     <form onSubmit={handleSubmit}>
       <input
         ref={inputEl}
-        type="file"
         onChange={handleChange}
+        type="file"
         multiple
         accept=".txt"
+        hidden
       />
+      <button onClick={onButtonClick}>Choose files</button>
+      <DropZone handleFilesDrop={handleChange} />
+
       <ul>
         {fileNames.map((item) => (
           <li key={item}>{item}</li>

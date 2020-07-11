@@ -1,3 +1,10 @@
 body {
   font-family: sans-serif;
 }
+.dropzone {
+  margin-top: 1rem;
+  height: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
