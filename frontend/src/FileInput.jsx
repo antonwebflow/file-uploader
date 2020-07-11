@@ -5,20 +5,23 @@ import DropZone from "./DropZone";
 const FileInput = () => {
   const [loading, setLoading] = useState(false);
   const [emails, setEmails] = useState([]);
-  const [fileNames, setFileNames] = useState([]);
   const [status, setStatus] = useState({
     error: "",
     emails: [],
     state: "initial",
   });
+
+  const [filesMeta, setFilesMeta] = useState([]);
+
   const inputEl = useRef(null);
 
   const handleChange = async (e) => {
     setStatus({ state: "initial" });
-    const combinedEmails = [];
-    const names = [];
+    const filesMetaAcc = [];
 
-    let fileListArray = undefined;
+    const combinedEmails = [];
+
+    let fileListArray;
 
     if (e.dataTransfer?.files) {
       fileListArray = Array.from(e.dataTransfer.files);
@@ -27,14 +30,17 @@ const FileInput = () => {
     }
     await Promise.all(
       fileListArray.map(async (file) => {
-        names.push(file.name);
         const text = await file.text();
         const emails = text.trim().split(/\n/);
+        filesMetaAcc.push({
+          fileName: file.name,
+          numberOfEmails: emails.length,
+        });
         combinedEmails.push(...emails);
       })
     );
 
-    setFileNames(names);
+    setFilesMeta(filesMetaAcc);
 
     const uniqueEmails = new Set(combinedEmails);
 
@@ -52,7 +58,7 @@ const FileInput = () => {
     setLoading(false);
     if (response.ok) {
       setStatus({ state: "success" });
-      setFileNames([]);
+      setFilesMeta([]);
       inputEl.current.value = null;
     } else {
       const text = await response.text();
@@ -75,11 +81,13 @@ const FileInput = () => {
       <DropZone handleFilesDrop={handleChange} />
 
       <ul>
-        {fileNames.map((item) => (
-          <li key={item}>{item}</li>
+        {filesMeta.map(({ fileName, numberOfEmails }) => (
+          <li key={fileName}>
+            {fileName}. Number of emails: {numberOfEmails}
+          </li>
         ))}
       </ul>
-      <button disabled={loading || fileNames.length === 0}>Send emails</button>
+      <button disabled={loading || filesMeta.length === 0}>Send emails</button>
 
       {loading && <h4>Loading...</h4>}
 
