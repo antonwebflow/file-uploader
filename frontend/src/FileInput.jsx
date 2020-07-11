@@ -82,8 +82,6 @@ const FileInput = () => {
 
       <DropZone handleFilesDrop={handleChange} />
 
-      {loading && <h4>Loading...</h4>}
-
       {filesMeta.length !== 0 && (
         <ul>
           {filesMeta.map(({ fileName, numberOfEmails }) => (
@@ -93,6 +91,8 @@ const FileInput = () => {
           ))}
         </ul>
       )}
+
+      {loading && <h4>Loading...</h4>}
 
       <button disabled={loading || filesMeta.length === 0}>Send emails</button>
 
