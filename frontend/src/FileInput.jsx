@@ -77,30 +77,37 @@ const FileInput = () => {
         accept=".txt"
         hidden
       />
-      <button onClick={onButtonClick}>Choose files</button>
-      <DropZone handleFilesDrop={handleChange} />
 
-      <ul>
-        {filesMeta.map(({ fileName, numberOfEmails }) => (
-          <li key={fileName}>
-            {fileName}. Number of emails: {numberOfEmails}
-          </li>
-        ))}
-      </ul>
-      <button disabled={loading || filesMeta.length === 0}>Send emails</button>
+      <button onClick={onButtonClick}>Choose files</button>
+
+      <DropZone handleFilesDrop={handleChange} />
 
       {loading && <h4>Loading...</h4>}
 
+      {filesMeta.length !== 0 && (
+        <ul>
+          {filesMeta.map(({ fileName, numberOfEmails }) => (
+            <li key={fileName}>
+              {fileName}. Number of emails: {numberOfEmails}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <button disabled={loading || filesMeta.length === 0}>Send emails</button>
+
       {status?.state === "success" && <h4>Emails sent successfully</h4>}
 
-      <h4>{status?.error}</h4>
-      <ul>
-        {status?.emails?.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-
-      {JSON.stringify(status)}
+      {status?.error && (
+        <div role="alert">
+          <h4>{status?.error}</h4>
+          <ul>
+            {status?.emails?.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </form>
   );
 };

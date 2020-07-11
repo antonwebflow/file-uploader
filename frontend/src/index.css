@@ -2,7 +2,7 @@ body {
   font-family: sans-serif;
 }
 .dropzone {
-  margin-top: 1rem;
+  margin: 1rem 0;
   height: 10rem;
   display: flex;
   justify-content: center;

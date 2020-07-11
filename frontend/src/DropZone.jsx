@@ -9,6 +9,11 @@ const DropZone = ({ handleFilesDrop }) => {
     setDragging(true);
   };
 
+  const onDragLeave = (e) => {
+    e.preventDefault();
+    setDragging(false);
+  };
+
   const onFilesDrop = (e) => {
     e.preventDefault();
     setDragging(false);
@@ -20,7 +25,8 @@ const DropZone = ({ handleFilesDrop }) => {
       className="dropzone"
       onDrop={onFilesDrop}
       onDragOver={onDragOver}
-      style={{ backgroundColor: dragging ? "#a8a8a8" : "#eee" }}
+      onDragLeave={onDragLeave}
+      style={{ backgroundColor: dragging ? "#a8a8a8" : "#c5c5c5" }}
     >
       <span>Choose files or drag 'n' drop them here</span>
     </div>
